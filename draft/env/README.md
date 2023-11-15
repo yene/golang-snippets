@@ -19,3 +19,4 @@ https://github.com/caarlos0/env
 * How to cast variable to a generic type?
   `animal,_ := reflect.ValueOf(cat).Interface().(T)`
   When the value's type is only known at runtime, the  reflect.Value  API must be used.
+  You can also use `any` and do an unchecked assertion before returning https://stackoverflow.com/a/71048872
