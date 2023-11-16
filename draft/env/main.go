@@ -52,7 +52,7 @@ type SupportedEnvTypes interface {
 // The type is defined by defaultValue
 func parseEnv[T SupportedEnvTypes](name string, defaultValue T, isRequired bool) (T, error) {
 	var emptyRet T
-	var ret any
+	var ret T
 
 	val, present := os.LookupEnv(name)
 	if !present && isRequired {
@@ -72,14 +72,14 @@ func parseEnv[T SupportedEnvTypes](name string, defaultValue T, isRequired bool)
 		if err != nil {
 			return emptyRet, fmt.Errorf("parse error for env var\"%s\" is not an int", name)
 		}
-		ret = i
+		ret = any(i).(T)
 	case string:
-		ret = val
+		ret = any(val).(T)
 	case bool:
 		if val == "True" || val == "true" || val == "1" {
-			ret = true
+			ret = any(true).(T)
 		} else if val == "False" || val == "false" || val == "0" {
-			ret = false
+			ret = any(false).(T)
 		} else {
 			return emptyRet, fmt.Errorf("parse error for env var\"%s\" is not a bool", name)
 		}
@@ -87,7 +87,7 @@ func parseEnv[T SupportedEnvTypes](name string, defaultValue T, isRequired bool)
 		return emptyRet, fmt.Errorf("type %T is not supported", defaultValue)
 	}
 
-	return ret.(T), nil // this assertion is unchecked
+	return ret, nil
 }
 
 func mustParseEnv[T SupportedEnvTypes](name string, defaultValue T, isRequired bool) T {
