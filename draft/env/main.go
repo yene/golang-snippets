@@ -62,6 +62,10 @@ func parseEnv[T SupportedEnvTypes](name string, defaultValue T, isRequired bool)
 		return defaultValue, nil
 	}
 	val = strings.TrimSpace(val)
+	if val == "" && isRequired {
+		return emptyRet, fmt.Errorf("required environment variable %s has no value", name)
+	}
+
 	if val == "" {
 		return defaultValue, nil
 	}
